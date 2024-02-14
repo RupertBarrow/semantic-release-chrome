@@ -12,8 +12,12 @@ module.exports = {
   branches: [
     'master',
     {
-      name: 'allowPrereleaseAndVersionName',
+      name: 'prAllowPrereleaseAndVersionName',
+      channel: 'alpha',
       prerelease: true,
     },
   ],
+
+  ci: false,
+  dryRun: false,
 }
