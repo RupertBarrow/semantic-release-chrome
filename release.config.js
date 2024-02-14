@@ -12,7 +12,7 @@ module.exports = {
   branches: [
     'master',
     {
-      name: 'pr/allowPrelreaseBranchesAndVersionName',
+      name: 'allowPrereleaseAndVersionName',
       prerelease: true,
     },
   ],
