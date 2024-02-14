@@ -73,3 +73,6 @@ typings/
 .serverless
 
 /dist
+
+# MacOS
+.DS_Store

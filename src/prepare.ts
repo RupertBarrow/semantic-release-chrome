@@ -13,12 +13,34 @@ const prepareManifest = (
   manifestPath: string,
   version: string,
   logger: Context['logger'],
+  versionName: string,
 ) => {
   const manifest = readJsonSync(manifestPath)
 
-  writeJsonSync(manifestPath, { ...manifest, version }, { spaces: 2 })
+  if (versionName) {
+    writeJsonSync(
+      manifestPath,
+      {
+        ...manifest,
+        version,
+        version_name: versionName,
+      },
+      { spaces: 2 },
+    )
+  } else {
+    writeJsonSync(manifestPath, { ...manifest, version }, { spaces: 2 })
+  }
 
-  logger.log('Wrote version %s to %s', version, manifestPath)
+  if (versionName) {
+    logger.log(
+      'Wrote version %s and version_name %s to %s',
+      version,
+      versionName,
+      manifestPath,
+    )
+  } else {
+    logger.log('Wrote version %s to %s', version, manifestPath)
+  }
 }
 
 const zipFolder = (
@@ -42,21 +64,21 @@ const zipFolder = (
 
 /**
  * Attempts to parse a semantic version number from a pre-release version string.
- * 
+ *
  * Context:
- * The semantic-release package will provide a version string such as '1.0.0-develop.1' when using the 
+ * The semantic-release package will provide a version string such as '1.0.0-develop.1' when using the
  * pre-release functionality. This function will parse out the semantic version number '1.0.0' from this
  * string, so that the version will adhere to the chrome web store's version format requirement.
- * 
+ *
  * @param prereleaseVersion pre-release version string from which to parse the semantic version number
  * @returns semantic version number parsed from prereleaseVersion input. throws error if unable to parse
  */
 export const parsePrereleaseVersion = (prereleaseVersion: string) => {
   const versionMatch = prereleaseVersion?.match(/\d+\.\d+\.\d+/)
   if (!versionMatch) {
-      throw new SemanticReleaseError(
-        'Could not parse semantic version number from pre-release version',
-      )
+    throw new SemanticReleaseError(
+      'Could not parse semantic version number from pre-release version',
+    )
   }
   return versionMatch[0]
 }
@@ -78,7 +100,10 @@ const prepare = (
       'Could not determine the version from semantic release.',
     )
   }
-  const version = allowPrerelease ? parsePrereleaseVersion(nextReleaseVersion) : nextReleaseVersion
+  const versionName = nextReleaseVersion
+  const version = allowPrerelease
+    ? parsePrereleaseVersion(nextReleaseVersion)
+    : nextReleaseVersion
 
   const normalizedDistFolder = distFolder || 'dist'
 
@@ -93,6 +118,7 @@ const prepare = (
     manifestPath || `${normalizedDistFolder}/manifest.json`,
     version,
     logger,
+    versionName,
   )
   zipFolder(compiledAssetString, normalizedDistFolder, logger)
 }
