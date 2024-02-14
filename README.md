@@ -61,7 +61,11 @@ This plugin requires some parameters to be set, so be sure to check below and fi
 
 - `manifestPath`: The path of the `manifest.json` file inside the dist folder. Defaults to `<distFolder parameter>/manifest.json`.
 
-- `allowPrerelease`: Boolean value that specifies if pre-release versions should be allowed. When set to true, if a pre-release version (such as `1.0.0-develop.1`) is passed to this plugin, the semantic release number (`1.0.0`) will be parsed and used for the chrome web store publish.
+- `allowPrerelease` (default: `false`): Boolean value that specifies if pre-release versions should be allowed.
+
+When `allowPrerelease` is set to `true`, if a pre-release version (such as `2.1.3-develop.8`) is passed to this plugin, it will calculate a semantic release number (such as `2.3.1.1707934750`) which is passed as the manifest `version` property and used for the Chrome web store for internal use. The pre-release version (eg `2.1.3-develop.8`) is stored manifest `version_name` property which will be displayed in the Chrome web store.
+
+NB : the build number (`.1707934750` in our example) is a unique incremental number which garantees that version numbers are ordered correctly.
 
 The `asset` parameter is parsed with Lodash template. The following variables are available: `branch`, `lastRelease`, `nextRelease` and `commits`. Search on the [plugins](https://github.com/semantic-release/semantic-release/blob/master/docs/developer-guide/plugin.md) documentation to see the type of those objects.
 

@@ -4,14 +4,17 @@ import SemanticReleaseError from '@semantic-release/error'
 
 describe('parsePrereleaseVersion', () => {
   test('success case - typical semantic-release prerelease version string (develop)', () => {
-    expect(parsePrereleaseVersion('1.0.0-develop.1')).toEqual('1.0.0.4000001')
+    expect(parsePrereleaseVersion('1.0.0-develop.1')).toContain('1.0.0.')
+    expect(parsePrereleaseVersion('1.0.0-develop.1').length).toEqual(19)
   })
 
   test('success case - typical semantic-release prerelease version string (alpha)', () => {
-    expect(parsePrereleaseVersion('1.3.0-alpha.2')).toEqual('1.3.0.2000002')
+    expect(parsePrereleaseVersion('1.3.0-alpha.2')).toContain('1.3.0.')
+    expect(parsePrereleaseVersion('1.3.0-alpha.2').length).toEqual(19)
   })
   test('success case - semantic-release prerelease version string with unknown channel', () => {
-    expect(parsePrereleaseVersion('1.3.0-unknown.2')).toEqual('1.3.0.0000002')
+    expect(parsePrereleaseVersion('1.3.0-unknown.2')).toContain('1.3.0.')
+    expect(parsePrereleaseVersion('1.3.0-unknown.2').length).toEqual(19)
   })
 
   test('success case - normal semantic-release version string', () => {

@@ -17,27 +17,16 @@ const prepareManifest = (
 ) => {
   const manifest = readJsonSync(manifestPath)
 
+  // prettier-ignore
   if (versionName) {
-    writeJsonSync(
-      manifestPath,
-      {
-        ...manifest,
-        version,
-        version_name: versionName,
-      },
-      { spaces: 2 },
-    )
+    writeJsonSync(manifestPath, { ...manifest, version, version_name: versionName }, { spaces: 2 })
   } else {
     writeJsonSync(manifestPath, { ...manifest, version }, { spaces: 2 })
   }
 
+  // prettier-ignore
   if (versionName) {
-    logger.log(
-      'Wrote version %s and version_name %s to %s',
-      version,
-      versionName,
-      manifestPath,
-    )
+    logger.log('Wrote version %s and version_name %s to %s', version, versionName, manifestPath)
   } else {
     logger.log('Wrote version %s to %s', version, manifestPath)
   }
@@ -60,25 +49,17 @@ const zipFolder = (
   logger.log('Wrote zipped file to %s', zipPath)
 }
 
-const MAP_CHANNEL_TO_NUMBER = {
-  nightly: '1',
-  alpha: '2',
-  beta: '3',
-  develop: '4',
-  master: '6',
-  latest: '7',
-  next: '8',
-  'next-major': '9',
-}
 /**
  * Attempts to parse a semantic version number from a pre-release version string.
  *
  * Context:
  * The semantic-release package will provide a version string such as '2.3.5-develop.1' when using the
- * pre-release functionality. This function will parse out the semantic version number '2.3.5.4000001' from this
+ * pre-release functionality. This function will parse out the semantic version number '2.3.5.1707934750' from this
  * string, so that the version will adhere to the chrome web store's version format requirement.
  *
- * The build version is built from the channel name (mapped to a digit) and the build number, padded with 0s.
+ * The build version is the result of Date.now(), an incremental and unique number for correcting ordering of versions.
+ *
+ * Version numbers in the form of 1.2.3, without a channel and build number, will be returned as is.
  *
  * @param prereleaseVersion pre-release version string from which to parse the semantic version number
  * @returns semantic version number parsed from prereleaseVersion input. throws error if unable to parse
@@ -91,17 +72,13 @@ export const parsePrereleaseVersion = (prereleaseVersion: string) => {
     )
   }
   const majorMinorPatchVersion = versionMatch?.[0] // eg 1.3.2
+  const buildVersion = Date.now() // unique incremental number
 
-  const prereleaseMatch = prereleaseVersion?.match(/-(\w+)\.(\d+)/)
-  if (!prereleaseMatch) {
-    throw new SemanticReleaseError('Could not parse pre-release version')
+  if (majorMinorPatchVersion === prereleaseVersion) {
+    return prereleaseVersion
+  } else {
+    return `${majorMinorPatchVersion}.${buildVersion}`
   }
-
-  const [, channelName, buildNumber] = prereleaseMatch // eg develop, 1
-  const channelNumber = MAP_CHANNEL_TO_NUMBER[channelName] ?? '0'
-  const buildVersion = `${channelNumber}${buildNumber.padStart(6, '0')}` // eg 4000001
-
-  return `${majorMinorPatchVersion}.${buildVersion}`
 }
 
 const prepare = (
