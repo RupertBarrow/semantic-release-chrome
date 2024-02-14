@@ -8,4 +8,12 @@ module.exports = {
       },
     ],
   },
+
+  branches: [
+    'master',
+    {
+      name: 'pr/allowPrelreaseBranchesAndVersionName',
+      prerelease: true,
+    },
+  ],
 }
