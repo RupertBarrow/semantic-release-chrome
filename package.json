@@ -1,6 +1,6 @@
 {
   "name": "@rupertbarrow/semantic-release-chrome",
-  "version": "3.3.0-prAllowPrereleaseAndVersionName.3",
+  "version": "3.3.0-prAllowPrereleaseAndVersionName.4",
   "exports": "./dist/index.js",
   "author": "Gabriel Duarte (https://www.gabrielduarte.dev)",
   "license": "MIT",

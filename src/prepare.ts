@@ -72,8 +72,8 @@ export const parsePrereleaseVersion = (prereleaseVersion: string) => {
     )
   }
   const majorMinorPatchVersion = versionMatch?.[0] // eg 1.3.2
-  const firstJan2024 = new Date('2024-01-01T00:00:00').getMilliseconds()
-  const buildVersion = (Date.now() - firstJan2024) / 1000 / 3660 // unique incremental number, must be < 65536 : number of hours since 1/1/2024
+  const firstJan2024 = new Date('2024-01-01T00:00:00').getTime()
+  const buildVersion = Math.round((Date.now() - firstJan2024) / 1000 / 3600) // unique incremental number, must be < 65536 : number of hours since 1/1/2024
 
   if (majorMinorPatchVersion === prereleaseVersion) {
     return prereleaseVersion
